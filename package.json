@@ -1,0 +1,24 @@
+{
+  "name": "electron-context-bridge",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "example": "electron example/main.js",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/eventemitter2": "^4.1.0",
+    "@types/uuid": "^3.4.3",
+    "awesome-typescript-loader": "^5.0.0",
+    "electron": "^2.0.1",
+    "eventemitter2": "^5.0.1",
+    "typescript": "^2.8.3",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3"
+  }
+}
