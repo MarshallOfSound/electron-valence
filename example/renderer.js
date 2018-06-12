@@ -2,7 +2,7 @@ console.info('renderer');
 
 // const Connector = require('../lib/Connector.js').default;
 
-const connector = new Connector();
+const connector = new Connector(new Connector.FrameMessageBus());
 
 connector.on('ready', async () => {
   const item = connector.items[0];

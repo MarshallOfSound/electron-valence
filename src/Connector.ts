@@ -3,14 +3,19 @@ import { EventEmitter2 } from 'eventemitter2';
 import { EXPOSED_INTERFACE, TARGETS, EXPOSED_ITEMS, CALL_ITEM_METHOD, FETCH_ITEM_PROPERTY } from './messages';
 import * as utils from './utils';
 import { Message, ExposeConstraints } from './types';
+import { MessageBus, IPCRendererMessageBus, FrameMessageBus } from './MessageBus';
 
 class BridgeConnector extends EventEmitter2 {
+  static MessageBus = MessageBus;
+  static IPCRendererMessageBus = IPCRendererMessageBus;
+  static FrameMessageBus = FrameMessageBus;
+
   private exposedInterface: ExposeConstraints[];
   public items: any[];
 
-  constructor() {
+  constructor(private bus: MessageBus) {
     super();
-    self.addEventListener('message', this.messageHandler);
+    bus.onMessage(this.messageHandler);
     this.request(EXPOSED_INTERFACE.request, null, (msg) => {
       this.exposedInterface = msg.payload;
       this.request(EXPOSED_ITEMS.request, null, (msg) => {
@@ -50,12 +55,14 @@ class BridgeConnector extends EventEmitter2 {
       let descriptor: PropertyDescriptor = {
         get: () => this.getProperty(itemPath, prop.propertyName),
         configurable: false,
+        enumerable: true,
       };
       if (typeof prop.type === 'object') {
         if (prop.type.name === 'object') {
           descriptor = {
             value: this.proxify(itemPath.concat([prop.propertyName]), prop.type.properties),
             configurable: false,
+            enumerable: true,
           };
         } else if (prop.type.name === 'method') {
           descriptor = {
@@ -68,6 +75,7 @@ class BridgeConnector extends EventEmitter2 {
               });
             },
             configurable: false,
+            enumerable: true,
           }
         }
       }
@@ -76,7 +84,7 @@ class BridgeConnector extends EventEmitter2 {
     return proxy;
   }
 
-  private dispatch = (rawName: string, payload?: any) => utils.dispatchTo(TARGETS.BRIDGE, rawName, payload);
+  private dispatch = (rawName: string, payload?: any) => utils.dispatchTo(this.bus, TARGETS.BRIDGE, rawName, payload);
 
   private requests: {
     [key: string]: (msg: Message<any>) => void;
@@ -87,9 +95,8 @@ class BridgeConnector extends EventEmitter2 {
     this.requests[requestId] = onResponse;
   }
 
-  private messageHandler = (event: MessageEvent) => {
-    if (!event.data) return;
-    const message = utils.parseMessage(event.data);
+  private messageHandler = (messageString: string) => {
+    const message = utils.parseMessage(messageString);
     if (!message) return;
     if (!utils.isTargettingConnector(message)) return;
 

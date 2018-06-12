@@ -2,9 +2,13 @@ console.info('preload');
 
 // window.addEventListener('message', console.info);
 
-const Bridge = require('../dist/bridge.js').default;
+const electronContextBridge = require('../dist/bridge.js');
 
-const bridge = new Bridge([{
+const Bridge = electronContextBridge.default;
+
+const { FrameMessageBus } = electronContextBridge;
+
+const bridge = new Bridge(new FrameMessageBus(), [{
     propertyName: 'exampleProp',
     type: 'number'
   },

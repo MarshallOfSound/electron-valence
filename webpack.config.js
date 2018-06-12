@@ -16,6 +16,8 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
 
+  externals: ['electron'],
+
   devtool: 'source-map',
 
   module: {

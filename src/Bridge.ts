@@ -3,13 +3,16 @@ import * as uuid from 'uuid';
 import { EXPOSED_INTERFACE, EXPOSED_ITEMS, FETCH_ITEM_PROPERTY, CALL_ITEM_METHOD } from './messages';
 import { ExposeConstraints } from './types';
 import * as utils from './utils';
+import { MessageBus } from './MessageBus';
+
+export { MessageBus, IPCMainMessageBus, FrameMessageBus } from './MessageBus';
 
 export default class ContextBridge {
   private items: {
     [itemId: string]: any;
   } = {};
-  constructor(private exposedInterface: ExposeConstraints[] = []) {
-    self.addEventListener('message', this.messageHandler);
+  constructor(private bus: MessageBus, private exposedInterface: ExposeConstraints[] = []) {
+    bus.onMessage(this.messageHandler);
   }
 
   // private dispatch = (name: string, payload?: any) =>  utils.dispatchTo(TARGETS.CONNECTOR, name, payload);
@@ -26,17 +29,16 @@ export default class ContextBridge {
     return item;
   }
 
-  private messageHandler = (event: MessageEvent) => {
-    if (!event.data) return;
-    const message = utils.parseMessage(event.data);
+  private messageHandler = (messageString: string) => {
+    const message = utils.parseMessage(messageString);
     if (!message) return;
     if (!utils.isTargettingBridge(message)) return;
 
     switch (utils.getRealName(message)) {
       case EXPOSED_INTERFACE.request:
-        return utils.respondTo(message, EXPOSED_INTERFACE.response, this.exposedInterface);
+        return utils.respondTo(this.bus, message, EXPOSED_INTERFACE.response, this.exposedInterface);
       case EXPOSED_ITEMS.request:
-        return utils.respondTo(message, EXPOSED_ITEMS.response, Object.keys(this.items));
+        return utils.respondTo(this.bus, message, EXPOSED_ITEMS.response, Object.keys(this.items));
 
       case FETCH_ITEM_PROPERTY.request: {
         let propValue: any = undefined;
@@ -44,7 +46,7 @@ export default class ContextBridge {
         if (item && typeof item === 'object') {
           propValue = item[message.payload.propName];
         }
-        return utils.respondTo(message, FETCH_ITEM_PROPERTY.response, propValue);
+        return utils.respondTo(this.bus, message, FETCH_ITEM_PROPERTY.response, propValue);
       }
       case CALL_ITEM_METHOD.request: {
         let returnValue: any = undefined;
@@ -54,22 +56,22 @@ export default class ContextBridge {
             try {
               returnValue = item[message.payload.propName](...message.payload.args);
             } catch (err) {
-              return utils.respondTo(message, CALL_ITEM_METHOD.response, { error: (err && typeof err === 'object') ? { stack: err.stack, message: err.message } : err });
+              return utils.respondTo(this.bus, message, CALL_ITEM_METHOD.response, { error: (err && typeof err === 'object') ? { stack: err.stack, message: err.message } : err });
             }
             if (returnValue.then) {
               returnValue.then((r: any) => {
-                return utils.respondTo(message, CALL_ITEM_METHOD.response, { result: r });
+                return utils.respondTo(this.bus, message, CALL_ITEM_METHOD.response, { result: r });
               }).catch((err: Error) => {
-                return utils.respondTo(message, CALL_ITEM_METHOD.response, { error: (err && typeof err === 'object') ? { stack: err.stack, message: err.message } : err });
+                return utils.respondTo(this.bus, message, CALL_ITEM_METHOD.response, { error: (err && typeof err === 'object') ? { stack: err.stack, message: err.message } : err });
               })
               return;
             }
-            return utils.respondTo(message, CALL_ITEM_METHOD.response, { result: returnValue });
+            return utils.respondTo(this.bus, message, CALL_ITEM_METHOD.response, { result: returnValue });
           } else {
-            return utils.respondTo(message, CALL_ITEM_METHOD.response, { error: { message: 'Property is not a function' } });
+            return utils.respondTo(this.bus, message, CALL_ITEM_METHOD.response, { error: { message: 'Property is not a function' } });
           }
         } else {
-          return utils.respondTo(message, CALL_ITEM_METHOD.response, { error: { message: 'Bad itemPath' } });
+          return utils.respondTo(this.bus, message, CALL_ITEM_METHOD.response, { error: { message: 'Bad itemPath' } });
         }
       }
     }

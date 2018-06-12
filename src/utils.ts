@@ -2,6 +2,7 @@ import * as uuid from 'uuid';
 
 import { TARGETS } from './messages';
 import { Message } from './types';
+import { MessageBus } from './MessageBus';
 
 export const parseMessage = (message: string): Message<any> | null => {
   try {
@@ -26,20 +27,20 @@ export const getRealName = (message: Message<any>) => {
   return message.name.substr(TARGETS.CONNECTOR.length);
 }
 
-export const dispatchTo = (target: string, rawName: string, payload?: any) => {
+export const dispatchTo = (bus: MessageBus, target: string, rawName: string, payload?: any) => {
   const id = uuid.v4();
   const name = `${target}${rawName}`;
 
-  window.postMessage(JSON.stringify({
+  bus.sendMessage(JSON.stringify({
     id,
     name,
     payload,
-  }), 'file://');
+  }));
 
   return id;
 };
 
-export const respondTo = (message: Message<any>, rawName: string, payload?: any) => {
+export const respondTo = (bus: MessageBus,message: Message<any>, rawName: string, payload?: any) => {
   const id = uuid.v4();
   let target = TARGETS.BRIDGE;
   if (isTargettingBridge(message)) {
@@ -48,12 +49,12 @@ export const respondTo = (message: Message<any>, rawName: string, payload?: any)
 
   const name = `${target}${rawName}`;
 
-  window.postMessage(JSON.stringify({
+  bus.sendMessage(JSON.stringify({
     id,
     name,
     payload,
     requestId: message.id,
-  }), 'file://');
+  }));
 
   return id;
 };

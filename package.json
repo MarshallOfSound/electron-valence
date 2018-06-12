@@ -4,9 +4,9 @@
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "webpack -p",
     "example": "electron example/main.js",
-    "watch": "tsc --watch"
+    "watch": "webpack --watch"
   },
   "dependencies": {
     "uuid": "^3.2.1"
