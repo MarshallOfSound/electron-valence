@@ -4,8 +4,10 @@ import { EXPOSED_INTERFACE, EXPOSED_ITEMS, FETCH_ITEM_PROPERTY, CALL_ITEM_METHOD
 import { ExposeConstraints } from './types';
 import * as utils from './utils';
 import { MessageBus } from './MessageBus';
+import * as Types from 'joi';
 
 export { MessageBus, IPCMainMessageBus, FrameMessageBus } from './MessageBus';
+export { Types };
 
 export default class ContextBridge {
   private items: {
@@ -14,8 +16,6 @@ export default class ContextBridge {
   constructor(private bus: MessageBus, private exposedInterface: ExposeConstraints[] = []) {
     bus.onMessage(this.messageHandler);
   }
-
-  // private dispatch = (name: string, payload?: any) =>  utils.dispatchTo(TARGETS.CONNECTOR, name, payload);
 
   private getItemAtPath = (itemPath: string[]) => {
     let item = this.items[itemPath[0]];

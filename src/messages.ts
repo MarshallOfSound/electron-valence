@@ -1,4 +1,4 @@
-const createMessage = (name: string) => `ElectronContextBridge::${name}`;
+export const createMessage = (name: string) => `ElectronContextBridge::${name}`;
 
 export interface RequestResponse {
   request: string;

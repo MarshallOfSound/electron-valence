@@ -1,10 +1,12 @@
+const DtsBundleWebpack = require('dts-bundle-webpack');
+
 const path = require('path');
 
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
-    bridge: path.resolve(__dirname, 'src', 'Bridge.ts'),
-    connector: path.resolve(__dirname, 'src', 'Connector.ts'),
+    Bridge: path.resolve(__dirname, 'src', 'Bridge.ts'),
+    Connector: path.resolve(__dirname, 'src', 'Connector.ts'),
   },
   output: {
     filename: '[name].js',
@@ -25,5 +27,12 @@ module.exports = {
       test: /\.tsx?$/,
       loader: 'awesome-typescript-loader'
     }]
-  }
+  },
+  plugins: [
+    new DtsBundleWebpack({
+      name: 'electron-context-bridge/dist',
+      main: 'tsc_out/src/index.d.ts',
+      out: path.resolve(__dirname, 'dist', 'index.d.ts'),
+    })
+  ]
 };

@@ -2,22 +2,26 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "es6",
-		"outDir": "lib",
+		"outDir": "tsc_out",
 		"lib": [
 			"es6",
 			"dom",
 			"es7"
 		],
 		"sourceMap": true,
-		"rootDir": "src",
+		"rootDir": ".",
 		"experimentalDecorators": true,
 		"strictNullChecks": true,
 		"noUnusedLocals": true,
 		"noImplicitThis": true,
-		"noImplicitAny": true
+		"noImplicitAny": true,
+		"declaration": true
 	},
 	"exclude": [
 		"node_modules",
-		"example"
+		"example",
+		"tsc_out",
+		"bridge.d.ts",
+		"connector.d.ts"
 	]
 }

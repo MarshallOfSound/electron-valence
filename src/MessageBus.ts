@@ -1,5 +1,8 @@
 import * as electron from 'electron';
 
+export const FRAME_MESSAGE_PREFIX = 'ELECTRON_CONTEXT_BRIDGE_INTERNAL_MESSAGE_PREFIX::';
+export const IPC_MESSAGE_CHANNEL = 'ELECTRON_CONTEXT_BRIDGE_INTERNAL_MESSAGE_CHANNEL';
+
 export type MessageHandler = (message: string) => void;
 
 export abstract class MessageBus {
@@ -19,38 +22,47 @@ export abstract class MessageBus {
 }
 
 export class FrameMessageBus extends MessageBus {
-  constructor() {
+  constructor(private targetWindow: Window = window) {
     super();
-    window.addEventListener('message', (event) => this.notify(event.data as string));
+    targetWindow.addEventListener('message', (event) => {
+      if (event.data.startsWith(FRAME_MESSAGE_PREFIX)) {
+        this.notify((event.data as string).substr(FRAME_MESSAGE_PREFIX.length));
+      }
+    });
   }
 
   sendMessage(message: string) {
-    window.postMessage(message, 'file://');
+    this.targetWindow.postMessage(`${FRAME_MESSAGE_PREFIX}${message}`, 'file://');
   }
 }
 
-const IPC_MESSAGE_CHANNEL = 'ELECTRON_CONTEXT_BRIDGE_INTERNAL_MESSAGE_CHANNEL';
+export interface MinimalIPCRenderer {
+  on(channel: string, handler: Function): void;
+  send(channel: string, ...args: any[]): void;
+}
 
 export class IPCRendererMessageBus extends MessageBus {
-  constructor() {
+  constructor(private ipcRenderer: MinimalIPCRenderer = electron.ipcRenderer) {
     super();
-    electron.ipcRenderer.on(IPC_MESSAGE_CHANNEL, (_: Event, message: string) => this.notify(message));
+    this.ipcRenderer.on(IPC_MESSAGE_CHANNEL, (_: Event, message: string) => this.notify(message));
   }
 
   sendMessage(message: string) {
-    electron.ipcRenderer.send(IPC_MESSAGE_CHANNEL, message);
+    this.ipcRenderer.send(IPC_MESSAGE_CHANNEL, message);
   }
+}
+
+export interface MinimalIPCMain {
+  on(channel: string, handler: Function): void;
 }
 
 export class IPCMainMessageBus extends MessageBus {
-  constructor(private targets: electron.BrowserWindow[]) {
+  constructor(private target: electron.BrowserWindow, private ipcMain: MinimalIPCMain = electron.ipcMain) {
     super();
-    electron.ipcMain.on(IPC_MESSAGE_CHANNEL, (_: Event, message: string) => this.notify(message));
+    this.ipcMain.on(IPC_MESSAGE_CHANNEL, (_: Event, message: string) => this.notify(message));
   }
 
   sendMessage(message: string) {
-    for (const target of this.targets) {
-      target.webContents.send(IPC_MESSAGE_CHANNEL, message);
-    }
+    this.target.webContents.send(IPC_MESSAGE_CHANNEL, message);
   }
 }

@@ -1,2 +1,5 @@
 node_modules
 dist
+tsc_out
+bridge.d.ts
+connector.d.ts

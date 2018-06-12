@@ -2,7 +2,7 @@ console.info('preload');
 
 // window.addEventListener('message', console.info);
 
-const electronContextBridge = require('../dist/bridge.js');
+const electronContextBridge = require('../dist/Bridge.js');
 
 const Bridge = electronContextBridge.default;
 

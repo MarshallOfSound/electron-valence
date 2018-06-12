@@ -3,13 +3,13 @@ import { EventEmitter2 } from 'eventemitter2';
 import { EXPOSED_INTERFACE, TARGETS, EXPOSED_ITEMS, CALL_ITEM_METHOD, FETCH_ITEM_PROPERTY } from './messages';
 import * as utils from './utils';
 import { Message, ExposeConstraints } from './types';
-import { MessageBus, IPCRendererMessageBus, FrameMessageBus } from './MessageBus';
+import { MessageBus } from './MessageBus';
+import * as Types from 'joi';
 
-class BridgeConnector extends EventEmitter2 {
-  static MessageBus = MessageBus;
-  static IPCRendererMessageBus = IPCRendererMessageBus;
-  static FrameMessageBus = FrameMessageBus;
+export { MessageBus, IPCRendererMessageBus, FrameMessageBus } from './MessageBus';
+export { Types };
 
+export class BridgeConnector extends EventEmitter2 {
   private exposedInterface: ExposeConstraints[];
   public items: any[];
 
@@ -113,5 +113,3 @@ class BridgeConnector extends EventEmitter2 {
     }
   }
 }
-
-module.exports = BridgeConnector;
