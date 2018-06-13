@@ -5,13 +5,14 @@ const path = require('path');
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
-    Bridge: path.resolve(__dirname, 'src', 'Transmitter.ts'),
-    Connector: path.resolve(__dirname, 'src', 'Receiver.ts'),
+    transmitter: path.resolve(__dirname, 'src', 'Transmitter.ts'),
+    receiver: path.resolve(__dirname, 'src', 'Receiver.ts'),
   },
   output: {
     filename: '[name].js',
-    library: 'ElectronContextBridge',
-    libraryTarget: 'umd'
+    library: 'ElectronValence',
+    libraryTarget: 'umd',
+    path: path.resolve(__dirname)
   },
   // target: 'electron-renderer',
   resolve: {
@@ -30,9 +31,9 @@ module.exports = {
   },
   plugins: [
     new DtsBundleWebpack({
-      name: 'electron-context-bridge/dist',
-      main: 'tsc_out/src/index.d.ts',
-      out: path.resolve(__dirname, 'dist', 'index.d.ts'),
+      name: 'electron-valence',
+      main: 'cjs/index.d.ts',
+      out: path.resolve(__dirname, 'index.d.ts'),
     })
   ]
 };

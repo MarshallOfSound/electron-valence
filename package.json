@@ -1,19 +1,25 @@
 {
-  "name": "electron-context-bridge",
+  "name": "electron-valence",
   "version": "1.0.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "scripts": {
-    "build": "yarn clean && tsc && webpack -p",
-    "clean": "rm -rf dist && rm -rf tsc_out",
+    "build": "yarn clean && tsc -p tsconfig.build.json && webpack -p",
+    "clean": "rm -f Transmitter.js Transmitter.js.map Receiver.js Receiver.js.map index.d.ts && rm -rf cjs test_out",
     "example": "electron example/main.js",
+    "prepublishOnly": "yarn build",
     "test": "yarn clean && tsc && ava",
     "watch": "webpack --watch"
   },
   "dependencies": {
+    "@marshallofsound/enjoi-browser": "^1.0.5",
     "@types/eventemitter2": "^4.1.0",
-    "@types/joi": "^13.0.8"
+    "@types/joi": "^13.0.8",
+    "eventemitter2": "^5.0.1",
+    "joi": "^13.4.0",
+    "joi-browser": "^13.0.1",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "@types/sinon": "^5.0.1",
@@ -22,12 +28,8 @@
     "awesome-typescript-loader": "^5.0.0",
     "dts-bundle-webpack": "^1.0.0",
     "electron": "^2.0.1",
-    "eventemitter2": "^5.0.1",
-    "joi": "^13.4.0",
-    "joi-browser": "^13.0.1",
     "sinon": "^6.0.0",
     "typescript": "^2.8.3",
-    "uuid": "^3.2.1",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.3"
   },

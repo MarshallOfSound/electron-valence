@@ -2,15 +2,14 @@ import { EventEmitter2 } from 'eventemitter2';
 
 import { EXPOSED_INTERFACE, TARGETS, EXPOSED_ITEMS, CALL_ITEM_METHOD, FETCH_ITEM_PROPERTY } from './messages';
 import * as utils from './utils';
-import { Message, ExposeConstraints } from './types';
+import { Message } from './types';
+import { TypeInterface, PropertyType, simplifyProperty } from './validation';
 import { IMessageBus } from './MessageBus';
-import * as Types from 'joi';
 
 export { IMessageBus, MessageBus, IPCRendererMessageBus, FrameMessageBus } from './MessageBus';
-export { Types };
 
 export class Receiver extends EventEmitter2 {
-  private exposedInterface: ExposeConstraints[];
+  private exposedInterface: TypeInterface;
   public items: any[];
 
   constructor(private bus: IMessageBus) {
@@ -55,35 +54,35 @@ export class Receiver extends EventEmitter2 {
 
   private proxify = (itemPath: string[], oInterface = this.exposedInterface) => {
     const proxy: any = {};
-    for (const prop of oInterface) {
+    for (const propertyName in oInterface) {
+      const prop = simplifyProperty(oInterface[propertyName]);
+
       let descriptor: PropertyDescriptor = {
-        get: () => this.getProperty(itemPath, prop.propertyName),
+        get: () => this.getProperty(itemPath, propertyName),
         configurable: false,
         enumerable: true,
       };
-      if (typeof prop.type === 'object') {
-        if (prop.type.name === 'object') {
-          descriptor = {
-            value: this.proxify(itemPath.concat([prop.propertyName]), prop.type.properties),
-            configurable: false,
-            enumerable: true,
-          };
-        } else if (prop.type.name === 'method') {
-          descriptor = {
-            value: (...args: any[]) => {
-              return new Promise((resolve, reject) => {
-                this.callMethod(itemPath, prop.propertyName, args, (err: Error, returnValue: any) => {
-                  if (err) return reject(err);
-                  resolve(returnValue);
-                });
+      if (prop.type === PropertyType.OBJECT) {
+        descriptor = {
+          value: this.proxify(itemPath.concat([propertyName]), prop.properties),
+          configurable: false,
+          enumerable: true,
+        };
+      } else if (prop.type === PropertyType.METHOD) {
+        descriptor = {
+          value: (...args: any[]) => {
+            return new Promise((resolve, reject) => {
+              this.callMethod(itemPath, propertyName, args, (err: Error, returnValue: any) => {
+                if (err) return reject(err);
+                resolve(returnValue);
               });
-            },
-            configurable: false,
-            enumerable: true,
-          }
+            });
+          },
+          configurable: false,
+          enumerable: true,
         }
       }
-      Object.defineProperty(proxy, prop.propertyName, descriptor);
+      Object.defineProperty(proxy, propertyName, descriptor);
     }
     return proxy;
   }

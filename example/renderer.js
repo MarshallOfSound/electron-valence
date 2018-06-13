@@ -1,6 +1,6 @@
 console.info('renderer');
 
-const receiver = new ElectronContextBridge.Receiver(new ElectronContextBridge.FrameMessageBus());
+const receiver = new ElectronValence.Receiver(new ElectronValence.FrameMessageBus());
 
 receiver.on('ready', async () => {
   const item = receiver.items[0];

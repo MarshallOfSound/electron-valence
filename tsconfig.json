@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "es6",
-		"outDir": "tsc_out",
+		"outDir": "test_out",
 		"lib": [
 			"es6",
 			"dom",

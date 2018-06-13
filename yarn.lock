@@ -293,6 +293,14 @@
   dependencies:
     arrify "^1.0.1"
 
+"@marshallofsound/enjoi-browser@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@marshallofsound/enjoi-browser/-/enjoi-browser-1.0.5.tgz#00507c6fb3ee6a032aa45bb4da8d78624b6fec16"
+  dependencies:
+    hoek "5.x.x"
+    joi-browser "13.x.x"
+    lodash "4.x.x"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -3588,7 +3596,7 @@ isurl@^1.0.0-alpha5:
     has-to-string-tag-x "^1.2.0"
     is-object "^1.0.1"
 
-joi-browser@^13.0.1:
+joi-browser@13.x.x, joi-browser@^13.0.1:
   version "13.0.1"
   resolved "https://registry.yarnpkg.com/joi-browser/-/joi-browser-13.0.1.tgz#06a7b782d94bca6fa0f107138846ea16588b2e7b"
 
@@ -3884,7 +3892,7 @@ lodash.merge@^4.6.0:
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.1.tgz#adc25d9cb99b9391c59624f379fbba60d7111d54"
 
-lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.10, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0:
+lodash@4.x.x, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.10, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 

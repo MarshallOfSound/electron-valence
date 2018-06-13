@@ -1,38 +1,27 @@
 console.info('preload');
 
-const { FrameMessageBus, Transmitter } = require('../dist/Bridge.js');
+const { FrameMessageBus, Transmitter, Types: { PropertyType } } = require('../transmitter.js');
 
-const { FrameMessageBus } = electronContextBridge;
-
-const transmitter = new Transmitter(new FrameMessageBus(), [{
-    propertyName: 'exampleProp',
-    type: 'number'
+const transmitter = new Transmitter(new FrameMessageBus(), {
+  exampleProp: {
+    type: PropertyType.VALUE,
   },
-  {
-    propertyName: 'stringProp',
-    type: 'string'
+  stringProp: {
+    type: PropertyType.VALUE,
   },
-  {
-    propertyName: 'deep',
-    type: {
-      name: 'object',
-      properties: [{
-        propertyName: 'foo',
-        type: 'string'
-      }]
+  deep: {
+    type: PropertyType.OBJECT,
+    properties: {
+      foo: {
+        type: PropertyType.VALUE,
+      }
     }
   },
-  {
-    propertyName: 'sayHi',
-    type: {
-      name: 'method',
-      arguments: [{
-        propertyName: 'name',
-        type: 'string'
-      }]
-    }
+  sayHi: {
+    type: PropertyType.METHOD,
+    argValidators: [],
   }
-]);
+});
 
 transmitter.expose({
   exampleProp: 1,

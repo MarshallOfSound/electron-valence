@@ -1,6 +1,8 @@
 node_modules
 dist
-tsc_out
-bridge.d.ts
-connector.d.ts
+cjs
+test_out
 yarn-error.log
+transmitter.js*
+receiver.js*
+index.d.ts

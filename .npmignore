@@ -1,7 +1,7 @@
 example
 src
 test
-tsc_out
+test_out
 tsconfig.json
 webpack.config.json
 yarn.lock

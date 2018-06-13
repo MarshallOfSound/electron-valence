@@ -1,10 +1,9 @@
 import * as uuid from 'uuid';
 
 import { EXPOSED_INTERFACE, EXPOSED_ITEMS, FETCH_ITEM_PROPERTY, CALL_ITEM_METHOD } from './messages';
-import { ExposeConstraints } from './types';
 import * as utils from './utils';
 import { IMessageBus } from './MessageBus';
-import * as Types from 'joi';
+import * as Types from './validation';
 
 export { IMessageBus, MessageBus, IPCMainMessageBus, FrameMessageBus } from './MessageBus';
 export { Types };
@@ -13,7 +12,7 @@ export class Transmitter {
   private items: {
     [itemId: string]: any;
   } = {};
-  constructor(private bus: IMessageBus, private exposedInterface: ExposeConstraints[] = []) {
+  constructor(private bus: IMessageBus, private exposedInterface: Types.TypeInterface = {}) {
     bus.onMessage(this.messageHandler);
   }
 
