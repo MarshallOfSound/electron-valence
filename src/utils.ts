@@ -3,7 +3,7 @@ import * as Joi from 'joi';
 
 import { TARGETS } from './messages';
 import { Message } from './types';
-import { MessageBus } from './MessageBus';
+import { IMessageBus } from './MessageBus';
 
 const messageShape = {
   id: Joi.string().required(),
@@ -40,7 +40,7 @@ export const getRealName = (message: Message<any>) => {
   return message.name;
 }
 
-export const dispatchTo = (bus: MessageBus, target: string, rawName: string, payload?: any) => {
+export const dispatchTo = (bus: IMessageBus, target: string, rawName: string, payload?: any) => {
   const id = uuid.v4();
   const name = `${target}${rawName}`;
 
@@ -53,7 +53,7 @@ export const dispatchTo = (bus: MessageBus, target: string, rawName: string, pay
   return id;
 };
 
-export const respondTo = (bus: MessageBus, message: Message<any>, rawName: string, payload?: any) => {
+export const respondTo = (bus: IMessageBus, message: Message<any>, rawName: string, payload?: any) => {
   const id = uuid.v4();
   let target = TARGETS.BRIDGE;
   if (isTargettingBridge(message)) {

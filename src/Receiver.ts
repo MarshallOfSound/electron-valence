@@ -3,26 +3,30 @@ import { EventEmitter2 } from 'eventemitter2';
 import { EXPOSED_INTERFACE, TARGETS, EXPOSED_ITEMS, CALL_ITEM_METHOD, FETCH_ITEM_PROPERTY } from './messages';
 import * as utils from './utils';
 import { Message, ExposeConstraints } from './types';
-import { MessageBus } from './MessageBus';
+import { IMessageBus } from './MessageBus';
 import * as Types from 'joi';
 
-export { MessageBus, IPCRendererMessageBus, FrameMessageBus } from './MessageBus';
+export { IMessageBus, MessageBus, IPCRendererMessageBus, FrameMessageBus } from './MessageBus';
 export { Types };
 
 export class Receiver extends EventEmitter2 {
   private exposedInterface: ExposeConstraints[];
   public items: any[];
 
-  constructor(private bus: MessageBus) {
+  constructor(private bus: IMessageBus) {
     super();
     bus.onMessage(this.messageHandler);
-    this.request(EXPOSED_INTERFACE.request, null, (msg) => {
-      this.exposedInterface = msg.payload;
-      this.request(EXPOSED_ITEMS.request, null, (msg) => {
-        this.items = msg.payload.map((id: string) => this.proxify([id]));
-        this.emit('ready');
+    // Ensure we don't end up syncronously requesting the interface
+    // we can't rely on the bus implementation being async
+    setTimeout(() => {
+      this.request(EXPOSED_INTERFACE.request, null, (msg) => {
+        this.exposedInterface = msg.payload;
+        this.request(EXPOSED_ITEMS.request, null, (msg) => {
+          this.items = msg.payload.map((id: string) => this.proxify([id]));
+          this.emit('ready');
+        });
       });
-    });
+    }, 0);
   }
 
   private getProperty = (itemPath: string[], propName: string) => {
