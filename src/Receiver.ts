@@ -9,7 +9,7 @@ import * as Types from 'joi';
 export { MessageBus, IPCRendererMessageBus, FrameMessageBus } from './MessageBus';
 export { Types };
 
-export class BridgeConnector extends EventEmitter2 {
+export class Receiver extends EventEmitter2 {
   private exposedInterface: ExposeConstraints[];
   public items: any[];
 

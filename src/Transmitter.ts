@@ -9,7 +9,7 @@ import * as Types from 'joi';
 export { MessageBus, IPCMainMessageBus, FrameMessageBus } from './MessageBus';
 export { Types };
 
-export default class ContextBridge {
+export class Transmitter {
   private items: {
     [itemId: string]: any;
   } = {};

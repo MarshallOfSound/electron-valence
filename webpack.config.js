@@ -5,12 +5,12 @@ const path = require('path');
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
-    Bridge: path.resolve(__dirname, 'src', 'Bridge.ts'),
-    Connector: path.resolve(__dirname, 'src', 'Connector.ts'),
+    Bridge: path.resolve(__dirname, 'src', 'Transmitter.ts'),
+    Connector: path.resolve(__dirname, 'src', 'Receiver.ts'),
   },
   output: {
     filename: '[name].js',
-    library: 'Connector',
+    library: 'ElectronContextBridge',
     libraryTarget: 'umd'
   },
   // target: 'electron-renderer',

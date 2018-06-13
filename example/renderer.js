@@ -1,9 +1,9 @@
 console.info('renderer');
 
-const connector = new Connector.BridgeConnector(new Connector.FrameMessageBus());
+const receiver = new ElectronContextBridge.Receiver(new ElectronContextBridge.FrameMessageBus());
 
-connector.on('ready', async () => {
-  const item = connector.items[0];
+receiver.on('ready', async () => {
+  const item = receiver.items[0];
   console.log(item);
   console.log(await item.stringProp);
   console.log(await item.exampleProp);

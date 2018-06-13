@@ -1,3 +1,3 @@
-export * from './Bridge';
+export * from './Transmitter';
 
-export * from './Connector';
+export * from './Receiver';

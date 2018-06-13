@@ -1,14 +1,10 @@
 console.info('preload');
 
-// window.addEventListener('message', console.info);
-
-const electronContextBridge = require('../dist/Bridge.js');
-
-const Bridge = electronContextBridge.default;
+const { FrameMessageBus, Transmitter } = require('../dist/Bridge.js');
 
 const { FrameMessageBus } = electronContextBridge;
 
-const bridge = new Bridge(new FrameMessageBus(), [{
+const transmitter = new Transmitter(new FrameMessageBus(), [{
     propertyName: 'exampleProp',
     type: 'number'
   },
@@ -38,7 +34,7 @@ const bridge = new Bridge(new FrameMessageBus(), [{
   }
 ]);
 
-bridge.expose({
+transmitter.expose({
   exampleProp: 1,
   stringProp: 'a',
   deep: {
