@@ -5,8 +5,9 @@ const path = require('path');
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
-    transmitter: path.resolve(__dirname, 'src', 'Transmitter.ts'),
-    receiver: path.resolve(__dirname, 'src', 'Receiver.ts'),
+    Booster: path.resolve(__dirname, 'src', 'Booster.ts'),
+    Transmitter: path.resolve(__dirname, 'src', 'Transmitter.ts'),
+    Receiver: path.resolve(__dirname, 'src', 'Receiver.ts'),
   },
   output: {
     filename: '[name].js',

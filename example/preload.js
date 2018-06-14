@@ -1,20 +1,13 @@
 console.info('preload');
 
-const { FrameMessageBus, Transmitter, Types: { PropertyType } } = require('../transmitter.js');
+const { FrameMessageBus, Transmitter, Validation: { PropertyType } } = require('../transmitter.js');
 
 const transmitter = new Transmitter(new FrameMessageBus(), {
-  exampleProp: {
-    type: PropertyType.VALUE,
-  },
-  stringProp: {
-    type: PropertyType.VALUE,
-  },
+  exampleProp:  PropertyType.VALUE,
   deep: {
     type: PropertyType.OBJECT,
     properties: {
-      foo: {
-        type: PropertyType.VALUE,
-      }
+      foo: PropertyType.VALUE,
     }
   },
   sayHi: {

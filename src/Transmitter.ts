@@ -3,16 +3,16 @@ import * as uuid from 'uuid';
 import { EXPOSED_INTERFACE, EXPOSED_ITEMS, FETCH_ITEM_PROPERTY, CALL_ITEM_METHOD } from './messages';
 import * as utils from './utils';
 import { IMessageBus } from './MessageBus';
-import * as Types from './validation';
+import * as Validation from './validation';
 
 export { IMessageBus, MessageBus, IPCMainMessageBus, FrameMessageBus } from './MessageBus';
-export { Types };
+export { Validation };
 
 export class Transmitter {
   private items: {
     [itemId: string]: any;
   } = {};
-  constructor(private bus: IMessageBus, private exposedInterface: Types.TypeInterface = {}) {
+  constructor(private bus: IMessageBus, private exposedInterface: Validation.TypeInterface = {}) {
     bus.onMessage(this.messageHandler);
   }
 

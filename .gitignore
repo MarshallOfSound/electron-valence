@@ -5,4 +5,5 @@ test_out
 yarn-error.log
 transmitter.js*
 receiver.js*
+booster.js*
 index.d.ts
