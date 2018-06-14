@@ -73,14 +73,6 @@ Taking the above example you can't do this: `firstItem.exampleProp = 'foo'`, thi
 
 The bridge is not completely open in both directions, exposing things from the **transmitter** to the **receiver** uses a proxy technique that allows methods to exposed safely.  Going in the opposite direction (sending things from the **receiver** to the **transmitter**) for instance by calling a function and passing arguments in only allows serializable values.  Functions will be nullified when crossing the bridge in that direction.  The diagrams below illustrate this
 
-<hide>
-```mermaid
-graph LR
-A[Transmitter] -- Proxied data --> B
-B[Receiver] -- Serialized data --> A
-```
-</hide>
-
 ![Serial Flow](docs/serial-flow.svg)
 
 # Advanced Usage
@@ -131,14 +123,5 @@ reciever.on('ready', async () => {
 ```
 
 In this example we are exposing items from the main process, and receiving them across both a process and context isolated boundary in the renderer process.  You can use `Booster` as many times as you want throughout a messages lifecycle so you can do complicated set ups like so.
-
-<hide>
-```mermaid
-graph LR
-A[Transmitter - Worker Process] --> B(Booster - Main Process)
-B --> C(Booster - Preload)
-C --> D[Receiver - Renderer]
-```
-</hide>
 
 ![Complex Flow](docs/complex-flow.svg)
