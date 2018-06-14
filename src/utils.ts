@@ -1,22 +1,17 @@
-import * as uuid from 'uuid';
-import * as Joi from 'joi';
+import * as uuidv4 from 'uuid/v4';
 
 import { TARGETS } from './messages';
 import { Message } from './types';
 import { IMessageBus } from './MessageBus';
 
-const messageShape = {
-  id: Joi.string().required(),
-  name: Joi.string().required(),
-  requestId: Joi.string().optional(),
-  payload: Joi.any().required(),
-};
-
 export const parseMessage = (message: string): Message<any> | null => {
   try {
     const o = JSON.parse(message);
-    const { error } = Joi.validate(o, messageShape);
-    if (error) return null;
+    if (!o || typeof o !== 'object' || typeof o.id !== 'string' ||
+        typeof o.name !== 'string' || typeof o.requestId !== 'string' ||
+        typeof o.payload === 'undefined' || !o.id || !o.name || !o.requestId) {
+      return null;
+    }
     return o as Message<any>;
   } catch (err) {
     return null;
@@ -41,7 +36,7 @@ export const getRealName = (message: Message<any>) => {
 }
 
 export const dispatchTo = (bus: IMessageBus, target: string, rawName: string, payload?: any) => {
-  const id = uuid.v4();
+  const id = uuidv4();
   const name = `${target}${rawName}`;
 
   bus.sendMessage(JSON.stringify({
@@ -54,7 +49,7 @@ export const dispatchTo = (bus: IMessageBus, target: string, rawName: string, pa
 };
 
 export const respondTo = (bus: IMessageBus, message: Message<any>, rawName: string, payload?: any) => {
-  const id = uuid.v4();
+  const id = uuidv4();
   let target = TARGETS.TRANSMITTER;
   if (isTargettingTransmitter(message)) {
     target = TARGETS.RECEIVER;

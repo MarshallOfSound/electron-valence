@@ -1,4 +1,6 @@
 const DtsBundleWebpack = require('dts-bundle-webpack');
+const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const path = require('path');
 
@@ -35,6 +37,6 @@ module.exports = {
       name: 'electron-valence',
       main: 'cjs/index.d.ts',
       out: path.resolve(__dirname, 'index.d.ts'),
-    })
-  ]
+    }),
+  ].concat(process.env.ANALYZE ? [new BundleAnalyzerPlugin()] : []),
 };

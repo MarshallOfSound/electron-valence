@@ -1,4 +1,4 @@
-import * as uuid from 'uuid';
+import * as uuidv4 from 'uuid/v4';
 import { Schema } from 'joi';
 
 import { EXPOSED_INTERFACE, EXPOSED_ITEMS, FETCH_ITEM_PROPERTY, CALL_ITEM_METHOD } from './messages';
@@ -149,6 +149,6 @@ export class Transmitter<T> {
 
   expose(item: T) {
     this.validateItem(item);
-    this.items[uuid.v4()] = item;
+    this.items[uuidv4()] = item;
   }
 }
