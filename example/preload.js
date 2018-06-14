@@ -4,6 +4,7 @@ const { FrameMessageBus, Transmitter, Validation: { PropertyType } } = require('
 
 const transmitter = new Transmitter(new FrameMessageBus(), {
   exampleProp:  PropertyType.VALUE,
+  stringProp: PropertyType.VALUE,
   deep: {
     type: PropertyType.OBJECT,
     properties: {
@@ -12,7 +13,7 @@ const transmitter = new Transmitter(new FrameMessageBus(), {
   },
   sayHi: {
     type: PropertyType.METHOD,
-    argValidators: [],
+    argValidators: [{ type: 'string' }],
   }
 });
 

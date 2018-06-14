@@ -48,13 +48,13 @@ import { Receiver, FrameMessageBus } from 'electron-valence/reciever';
 
 const receiver = new Receiver(new FrameMessageBus());
 
-reciever.on('ready', async () => {
+receiver.ready.then(async () => {
 	const firstItem = receiver.items[0];
 	console.log(firstItem);
 	console.log(await firstItem.exampleProp);
 	console.log(await firstItem.deep.foo);
 	console.log(await firstItem.sayHi('Sam'));
-});
+})
 ```
 
 ## Hold up, why is this kinda verbose...
@@ -115,7 +115,7 @@ import { Receiver, FrameMessageBus } from 'electron-valence/receiver';
 
 const receiver = new Receiver(new FrameMessageBus());
 
-reciever.on('ready', async () => {
+receiver.ready.then(async () => {
 	const firstItem = receiver.items[0];
 	console.log(firstItem);
 	console.log(await firstItem.exampleProp);;
