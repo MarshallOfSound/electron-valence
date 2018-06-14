@@ -28,7 +28,7 @@ const transmitter = new Trasmitter(
 		},
 		sayHi: {
 			type: PropertyType.METHOD,
-			argValidators: [],
+			argValidators: [{ type: 'string', minLength: 3 }],
 		},
 	},
 );
@@ -38,7 +38,7 @@ transmitter.expose({
 	deeps: {
 		foo: 123,
 	},
-	sayHi: () => 'Hey There',
+	sayHi: (name) => `Hey There, ${name}`,
 });
 ```
 
@@ -53,7 +53,7 @@ reciever.on('ready', async () => {
 	console.log(firstItem);
 	console.log(await firstItem.exampleProp);
 	console.log(await firstItem.deep.foo);
-	console.log(await firstItem.sayHi());
+	console.log(await firstItem.sayHi('Sam'));
 });
 ```
 
