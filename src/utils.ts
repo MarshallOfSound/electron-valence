@@ -8,8 +8,9 @@ export const parseMessage = (message: string): Message<any> | null => {
   try {
     const o = JSON.parse(message);
     if (!o || typeof o !== 'object' || typeof o.id !== 'string' ||
-        typeof o.name !== 'string' || typeof o.requestId !== 'string' ||
-        typeof o.payload === 'undefined' || !o.id || !o.name || !o.requestId) {
+        typeof o.name !== 'string' ||
+        (typeof o.requestId !== 'string' && typeof o.requestId !== 'undefined') ||
+        typeof o.payload === 'undefined' || !o.id || !o.name) {
       return null;
     }
     return o as Message<any>;
