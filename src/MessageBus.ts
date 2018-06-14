@@ -1,8 +1,8 @@
 import * as electron from 'electron';
 import { EventEmitter2 } from 'eventemitter2';
 
-export const FRAME_MESSAGE_PREFIX = 'ELECTRON_CONTEXT_BRIDGE_INTERNAL_MESSAGE_PREFIX::';
-export const IPC_MESSAGE_CHANNEL = 'ELECTRON_CONTEXT_BRIDGE_INTERNAL_MESSAGE_CHANNEL';
+export const FRAME_MESSAGE_PREFIX = 'ELECTRON_VALENCE_INTERNAL_MESSAGE_PREFIX::';
+export const IPC_MESSAGE_CHANNEL = 'ELECTRON_VALENCE_INTERNAL_MESSAGE_CHANNEL';
 
 export type MessageHandler = (message: string) => void;
 
@@ -83,10 +83,14 @@ export class IPCMainMessageBus extends MessageBus {
 export class LocalTestMessageBus extends MessageBus {
   constructor(public emitter: EventEmitter2) {
     super();
-    this.emitter.on('message', (message: string) => this.notify(message));
+    this.emitter.on('message', (message: string) => {
+      this.notify(message);
+    });
   }
 
   sendMessage(message: string) {
-    this.emitter.emit('message', message);
+    setTimeout(() => {
+      this.emitter.emit('message', message);
+    }, 0);
   }
 }

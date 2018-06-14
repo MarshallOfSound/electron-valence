@@ -10,8 +10,8 @@ export const createRequestResponse = (message: string): RequestResponse => ({
 });
 
 export const TARGETS = {
-  BRIDGE: 'TARGET_BRIDGE::',
-  CONNECTOR: 'TARGET_CONNECTOR::'
+  TRANSMITTER: 'TARGET_TRANSMITTER::',
+  RECEIVER: 'TARGET_RECEIVER::'
 }
 
 export const EXPOSED_INTERFACE = createRequestResponse(createMessage('EXPOSED_INTERFACE'));

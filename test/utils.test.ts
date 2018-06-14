@@ -28,28 +28,28 @@ test('parseMessage should JSON parse messages with a valid requestId', t => {
 	t.deepEqual(utils.parseMessage('{"id":"1", "name":"yo", "requestId": "99"}'), null);
 });
 
-/* isTargettingBridge */
-test('isTargettingBridge should return true for messages aimed at the bridge', t => {
-  t.is(utils.isTargettingBridge({
-    name: TARGETS.BRIDGE + 'foo bar'
+/* isTargettingTransmitter */
+test('isTargettingTransmitter should return true for messages aimed at the transmitter', t => {
+  t.is(utils.isTargettingTransmitter({
+    name: TARGETS.TRANSMITTER + 'foo bar'
   } as any), true);
 });
 
-test('isTargettingBridge should return false for messages not aimed at the bridge', t => {
-  t.is(utils.isTargettingBridge({
+test('isTargettingTransmitter should return false for messages not aimed at the transmitter', t => {
+  t.is(utils.isTargettingTransmitter({
     name: 'thingy'
   } as any), false);
 });
 
-/* isTargettingConnector */
-test('isTargettingConnector should return true for messages aimed at the bridge', t => {
-  t.is(utils.isTargettingConnector({
-    name: TARGETS.CONNECTOR + 'foo bar'
+/* isTargettingReceiver */
+test('isTargettingReceiver should return true for messages aimed at the transmitter', t => {
+  t.is(utils.isTargettingReceiver({
+    name: TARGETS.RECEIVER + 'foo bar'
   } as any), true);
 });
 
-test('isTargettingConnector should return false for messages not aimed at the bridge', t => {
-  t.is(utils.isTargettingBridge({
+test('isTargettingReceiver should return false for messages not aimed at the transmitter', t => {
+  t.is(utils.isTargettingReceiver({
     name: 'thingy'
   } as any), false);
 });
@@ -57,11 +57,11 @@ test('isTargettingConnector should return false for messages not aimed at the br
 /* getRealName */
 test('getRealName should strip the target from the message name', t => {
   t.is(utils.getRealName({
-    name: TARGETS.CONNECTOR + 'foo bar'
+    name: TARGETS.RECEIVER + 'foo bar'
   } as any), 'foo bar');
 
   t.is(utils.getRealName({
-    name: TARGETS.BRIDGE + 'thingy'
+    name: TARGETS.TRANSMITTER + 'thingy'
   } as any), 'thingy');
 });
 

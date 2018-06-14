@@ -1,20 +1,23 @@
-import { EventEmitter2 } from 'eventemitter2';
-
 import { EXPOSED_INTERFACE, TARGETS, EXPOSED_ITEMS, CALL_ITEM_METHOD, FETCH_ITEM_PROPERTY } from './messages';
 import * as utils from './utils';
-import { Message } from './types';
+import { Message, Asyncify } from './types';
 import { TypeInterface, PropertyType, simplifyProperty } from './validation';
 import { IMessageBus } from './MessageBus';
 
 export { IMessageBus, MessageBus, IPCRendererMessageBus, FrameMessageBus } from './MessageBus';
+export { Asyncify, DirectAsyncValue } from './types';
 
-export class Receiver extends EventEmitter2 {
+export class Receiver<T> {
   private exposedInterface: TypeInterface;
-  public items: any[];
+  public items: Asyncify<T>[];
+  public ready: Promise<void>;
 
   constructor(private bus: IMessageBus) {
-    super();
     bus.onMessage(this.messageHandler);
+
+    let resolve: Function;
+    this.ready = new Promise(_resolve => { resolve = _resolve; });
+
     // Ensure we don't end up syncronously requesting the interface
     // we can't rely on the bus implementation being async
     setTimeout(() => {
@@ -22,7 +25,7 @@ export class Receiver extends EventEmitter2 {
         this.exposedInterface = msg.payload;
         this.request(EXPOSED_ITEMS.request, null, (msg) => {
           this.items = msg.payload.map((id: string) => this.proxify([id]));
-          this.emit('ready');
+          resolve();
         });
       });
     }, 0);
@@ -46,7 +49,11 @@ export class Receiver extends EventEmitter2 {
       args
     }, (msg) => {
       if (msg.payload.error) {
-        return cb(msg.payload.error);
+        let { error } = msg.payload;
+        if (error.message) {
+          error = new Error(error.message);
+        }
+        return cb(error);
       }
       cb(null, msg.payload.result);
     })
@@ -87,7 +94,7 @@ export class Receiver extends EventEmitter2 {
     return proxy;
   }
 
-  private dispatch = (rawName: string, payload?: any) => utils.dispatchTo(this.bus, TARGETS.BRIDGE, rawName, payload);
+  private dispatch = (rawName: string, payload?: any) => utils.dispatchTo(this.bus, TARGETS.TRANSMITTER, rawName, payload);
 
   private requests: {
     [key: string]: (msg: Message<any>) => void;
@@ -101,7 +108,7 @@ export class Receiver extends EventEmitter2 {
   private messageHandler = (messageString: string) => {
     const message = utils.parseMessage(messageString);
     if (!message) return;
-    if (!utils.isTargettingConnector(message)) return;
+    if (!utils.isTargettingReceiver(message)) return;
 
     if (message.requestId) {
       const onResponse = this.requests[message.requestId];

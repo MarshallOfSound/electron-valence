@@ -9,7 +9,7 @@
     "clean": "rm -f Transmitter.js* Receiver.js* Booster.js* index.d.ts && rm -rf cjs test_out",
     "example": "electron example/main.js",
     "prepublishOnly": "yarn build",
-    "test": "yarn clean && tsc && ava",
+    "test": "yarn clean && tsc -p tsconfig.test.json && ava",
     "watch": "webpack --watch"
   },
   "dependencies": {

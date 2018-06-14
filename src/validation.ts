@@ -1,4 +1,4 @@
-export type EnjoiSchema = {
+export type EnjoiSchema = ({
   type: 'object';
   properties: {
     [propertyName: string]: EnjoiSchema;
@@ -44,7 +44,7 @@ export type EnjoiSchema = {
   uniqueItems?: boolean;
 } | {
   type: 'null';
-};
+});
 
 export enum PropertyType {
   VALUE,
@@ -65,7 +65,7 @@ export type SimpleProperty = {
 export type Property = SimpleProperty | {
   type: PropertyType.METHOD;
   argValidators?: EnjoiSchema[];
-} | PropertyType.VALUE;
+} | PropertyType.VALUE | PropertyType.METHOD;
 
 export interface TypeInterface {
   [propertyName: string]: Property;
@@ -75,6 +75,12 @@ export const simplifyProperty = (prop: Property): SimpleProperty => {
   if (prop === PropertyType.VALUE) {
     return {
       type: PropertyType.VALUE,
+    };
+  }
+  if (prop === PropertyType.METHOD) {
+    return {
+      type: PropertyType.METHOD,
+      argValidators: [],
     };
   }
   if (prop.type === PropertyType.METHOD) {

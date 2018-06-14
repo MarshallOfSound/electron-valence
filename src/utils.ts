@@ -23,19 +23,19 @@ export const parseMessage = (message: string): Message<any> | null => {
   }
 };
 
-export const isTargettingBridge = (message: Message<any>) => {
-  return message.name.startsWith(TARGETS.BRIDGE)
+export const isTargettingTransmitter = (message: Message<any>) => {
+  return message.name.startsWith(TARGETS.TRANSMITTER)
 };
 
-export const isTargettingConnector = (message: Message<any>) => {
-  return message.name.startsWith(TARGETS.CONNECTOR)
+export const isTargettingReceiver = (message: Message<any>) => {
+  return message.name.startsWith(TARGETS.RECEIVER)
 };
 
 export const getRealName = (message: Message<any>) => {
-  if (isTargettingBridge(message)) {
-    return message.name.substr(TARGETS.BRIDGE.length);
-  } else if (isTargettingConnector(message)) {
-    return message.name.substr(TARGETS.CONNECTOR.length);
+  if (isTargettingTransmitter(message)) {
+    return message.name.substr(TARGETS.TRANSMITTER.length);
+  } else if (isTargettingReceiver(message)) {
+    return message.name.substr(TARGETS.RECEIVER.length);
   }
   return message.name;
 }
@@ -55,9 +55,9 @@ export const dispatchTo = (bus: IMessageBus, target: string, rawName: string, pa
 
 export const respondTo = (bus: IMessageBus, message: Message<any>, rawName: string, payload?: any) => {
   const id = uuid.v4();
-  let target = TARGETS.BRIDGE;
-  if (isTargettingBridge(message)) {
-    target = TARGETS.CONNECTOR;
+  let target = TARGETS.TRANSMITTER;
+  if (isTargettingTransmitter(message)) {
+    target = TARGETS.RECEIVER;
   }
 
   const name = `${target}${rawName}`;
