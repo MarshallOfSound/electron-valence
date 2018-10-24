@@ -9,52 +9,55 @@ This module allows to create a seamless and transparent bridge across process's 
 Enabling Context Isolation and Sandbox mode are two things you should **definitely** do when building an Electron app, without them your app is a security issue waiting to happen.  Unfortunately there is a considerable learning curve when adopting this two technologies, all communication has to be done by passing string messages around when most people are used to just injecting methods with `window.magicMethod = ...` and calling that method from their renderer.  This module aims to make the process of sharing information and API's between isolated contexts or processes easy and transparent.
 
 # Basic Usage
+```html
+// index.html
+    <script type='text/javascript' src="node_modules/electron-valence/Receiver.js"></script>
+    <script type='text/javascript' src="renderer.js"></script>
+```
 
 ```js
-// Preload.js
-import { Transmitter, FrameMessageBus, Validation } from 'electron-valence/transmitter';
+// preload.js
+const { Transmitter, FrameMessageBus, Validation } = require('electron-valence/Transmitter');
 
-const { PropertyType } = Validation;
+const {PropertyType} = Validation;
 
-const transmitter = new Trasmitter(
-	new FrameMessageBus(),
-	{
-		exampleProp:  PropertyType.VALUE,
-		deep: {
-			type: PropertyType.OBJECT,
-			properties: {
-				foo: PropertyType.VALUE,
-			},
-		},
-		sayHi: {
-			type: PropertyType.METHOD,
-			argValidators: [{ type: 'string', minLength: 3 }],
-		},
-	},
+const transmitter = new Transmitter(
+    new FrameMessageBus(),
+    {
+        exampleProp: PropertyType.VALUE,
+        deep: {
+            type: PropertyType.OBJECT,
+            properties: {
+                foo: PropertyType.VALUE
+            }
+        },
+        sayHi: {
+            type: PropertyType.METHOD,
+            argValidators: [{type: 'string', minLength: 3}]
+        }
+    }
 );
 
 transmitter.expose({
-	exampleProp: 'exampleValue',
-	deeps: {
-		foo: 123,
-	},
-	sayHi: (name) => `Hey There, ${name}`,
+    exampleProp: 'exampleValue',
+    deep: {
+        foo: 123
+    },
+    sayHi: (name) => `Hey There, ${name}`
 });
 ```
 
 ```js
-// Renderer.js
-import { Receiver, FrameMessageBus } from 'electron-valence/reciever';
-
-const receiver = new Receiver(new FrameMessageBus());
+// renderer.js
+const receiver = new ElectronValence.Receiver(new ElectronValence.FrameMessageBus());
 
 receiver.ready.then(async () => {
-	const firstItem = receiver.items[0];
-	console.log(firstItem);
-	console.log(await firstItem.exampleProp);
-	console.log(await firstItem.deep.foo);
-	console.log(await firstItem.sayHi('Sam'));
-})
+    const firstItem = receiver.items[0];
+    console.log(firstItem);
+    console.log(await firstItem.exampleProp);
+    console.log(await firstItem.deep.foo);
+    console.log(await firstItem.sayHi('Sam'));
+});
 ```
 
 ## Hold up, why is this kinda verbose...
